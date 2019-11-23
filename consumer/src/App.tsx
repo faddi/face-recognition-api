@@ -1,20 +1,20 @@
 import React from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 
-const addr = "ws://localhost:6789";
+const addr = 'ws://localhost:6789';
 
 let socket = new WebSocket(addr);
 
 const start = (onData: (data: any) => void) => {
-  socket = new WebSocket(addr)
+  socket = new WebSocket(addr);
   socket.onopen = function(e) {
-    console.log("[open] Connection established");
+    console.log('[open] Connection established');
   };
 
   socket.onmessage = function(event) {
     // console.log(`[message] Data received from server`);
-    const d = JSON.parse(event.data)
+    const d = JSON.parse(event.data);
     onData(d);
   };
 
@@ -27,20 +27,22 @@ const start = (onData: (data: any) => void) => {
       console.log('[close] Connection died');
     }
 
-    setTimeout(function(){start(onData)}, 5000);
+    setTimeout(function() {
+      start(onData);
+    }, 5000);
   };
 
   socket.onerror = function(error) {
     console.log(`[error] ${JSON.stringify(error)}`);
   };
-}
+};
 
 interface Face {
   age: number;
   bbox: [number, number, number, number];
   det_score: number;
-  embedding: number[]
-  embedding_norm: number[]
+  embedding: number[];
+  embedding_norm: number[];
   gender: number;
   image_jpg: string;
   landmark: number[][];
@@ -48,30 +50,43 @@ interface Face {
 }
 
 const App: React.FC = () => {
-
   const [facelist, setFaceList] = React.useState<Face[]>([]);
 
   React.useEffect(() => {
-    start(setFaceList)
+    start(setFaceList);
   }, []);
 
+  const handleFaceClick = (face: Face) => {
+    console.log(face);
+
+    const known_faces_str = localStorage.getItem('known_faces')
+
+    if (known_faces_str === null) {
+      return;
+    }
+
+    const known_faces: { [key:string]: Face[] } = JSON.parse(known_faces_str);
+
+
+  };
+
   let f = facelist.map(face => {
-    return <div key={JSON.stringify(face.landmark)}><img alt="hello" src={'data:image/png;base64, ' + face.image_jpg} /></div>
-  })
+    return (
+      <div key={JSON.stringify(face.landmark)} onClick={() => handleFaceClick(face)} style={{ cursor: 'pointer' }}>
+        <img alt="hello" src={'data:image/png;base64, ' + face.image_jpg} />
+      </div>
+    );
+  });
 
   if (f.length === 0) {
-    f = [<div key="empty">Nothing found...</div>]
+    f = [<div key="empty">Nothing found...</div>];
   }
-
-
 
   return (
     <div className="App">
-      <header className="App-header">
-        {f}
-      </header>
+      <header className="App-header">{f}</header>
     </div>
   );
-}
+};
 
 export default App;

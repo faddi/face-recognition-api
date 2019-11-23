@@ -18,6 +18,7 @@ mz._models['arcface_mfn_v1'] = fr.arcface_mfn_v1
 # face.model_zoo._models['arcface_mfn_v1'] = face.arcface_mfn_v1
 
 from insightface.app.face_analysis import Face
+from time import sleep
 
 logger = logging.getLogger('websockets.server')
 logger.setLevel(logging.ERROR)
@@ -91,11 +92,16 @@ model.prepare(-1)
 # r = redis.Redis(host='localhost', port=6379, db=0)
 
 last_empty_sent = False
-scale = 0.5
+scale = 1.0
 
 while True:
+    sleep(1.0)
     # Grab a single frame of video
     ret, frame = video_capture.read()
+
+    if not ret:
+      print("bad frame")
+      continue
 
     # Resize frame of video to 1/4 size for faster face detection processing
     small_frame = cv2.resize(frame, (0, 0), fx=scale, fy=scale)
