@@ -72,14 +72,16 @@ const faceDistance = (f1: Face, f2: Face): number => {
   return Number(d);
 };
 
-const calculateFaceDistances = (knownFaces: KnownFacesObjType, facelist: Face[]): { [key: string]: number[] } => {
+const calculateFaceDistances = (knownFaces: KnownFacesObjType, facelist: Face[]): { [key: string]: number[][] } => {
   const keys = Object.keys(knownFaces);
 
-  let out: { [key: string]: number[] } = {};
+  let out: { [key: string]: number[][] } = {};
 
   for (const k of keys) {
     out[k] = knownFaces[k].map(f => {
-      return faceDistance(f, facelist[0]);
+      return facelist.map(f2 => {
+        return faceDistance(f, f2);
+      });
     });
   }
 
@@ -157,7 +159,7 @@ const App: React.FC = () => {
   let knownFacesList = [<div key="no">No known faces.</div>];
   const knownNames = Object.keys(knownFaces);
   if (knownNames.length > 0) {
-    let allDistances: { [key: string]: number[] } = {};
+    let allDistances: { [key: string]: number[][] } = {};
     if (facelist.length > 0) {
       allDistances = calculateFaceDistances(knownFaces, facelist);
     }
@@ -169,18 +171,20 @@ const App: React.FC = () => {
       const renderedFaces = faces.map((f, i) => {
         let distance = null;
         if (personDistances && personDistances.length > i) {
-          distance = <span>distance: {personDistances[i].toFixed(2)}</span>;
+          distance = personDistances[i].map((ds, faceindex) => {
+            return <span key={`${name}_${i}_${faceindex}`} style={{display: 'inline-block', padding: '0 10px'}}><img alt="w/e" src={'data:image/png;base64, ' + facelist[faceindex].image_jpg} />: {ds.toFixed(2)}</span>;
+          })
         }
 
         return (
           <div key={`${name}_${i}`}>
-            {distance}
             <img
               alt="hello"
               src={'data:image/png;base64, ' + f.image_jpg}
               onClick={() => handleDeleteKnownFace(name, i)}
               style={{ cursor: 'pointer' }}
             />
+            {distance}
           </div>
         );
       });
