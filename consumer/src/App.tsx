@@ -3,6 +3,7 @@ import React from 'react';
 import './App.css';
 import { Face } from './types';
 import { Editor } from './Editor';
+import * as math from 'mathjs';
 
 const addr = 'ws://localhost:6789';
 
@@ -39,8 +40,10 @@ const start = (onData: (data: any) => void) => {
   };
 };
 
+type KnownFacesObjType = { [key: string]: Face[] };
+
 const STORAGE_KEY = 'known_faces';
-const getKnownFacesFromStorage = (): { [key: string]: Face[] } => {
+const getKnownFacesFromStorage = (): KnownFacesObjType => {
   const known_faces_str = localStorage.getItem(STORAGE_KEY);
 
   if (known_faces_str === null) {
@@ -56,6 +59,31 @@ const getKnownFacesFromStorage = (): { [key: string]: Face[] } => {
 
     return {};
   }
+};
+
+const faceDistance = (f1: Face, f2: Face): number => {
+  const mf1 = math.matrix(f1.normed_embedding);
+  const mf2 = math.matrix(f2.normed_embedding);
+
+  const s = math.subtract(mf1, mf2);
+
+  const d = math.norm(s as math.Matrix);
+
+  return Number(d);
+};
+
+const calculateFaceDistances = (knownFaces: KnownFacesObjType, facelist: Face[]): { [key: string]: number[] } => {
+  const keys = Object.keys(knownFaces);
+
+  let out: { [key: string]: number[] } = {};
+
+  for (const k of keys) {
+    out[k] = knownFaces[k].map(f => {
+      return faceDistance(f, facelist[0]);
+    });
+  }
+
+  return out;
 };
 
 const App: React.FC = () => {
@@ -89,6 +117,24 @@ const App: React.FC = () => {
     setKnownFaces(known);
   };
 
+  const handleDeleteKnownFace = (nameIn: string, index: number) => {
+    console.log(nameIn, index);
+
+    const name = nameIn.trim();
+
+    if (name.length === 0) {
+      console.log('invalid name');
+      return;
+    }
+
+    const known = getKnownFacesFromStorage();
+
+    known[name] = known[name].filter((_, i) => i !== index);
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(known));
+    setKnownFaces(known);
+  };
+
   let f = facelist.map(face => {
     return (
       <div key={JSON.stringify(face.landmark)} onClick={() => setEditFace(face)} style={{ cursor: 'pointer' }}>
@@ -111,11 +157,32 @@ const App: React.FC = () => {
   let knownFacesList = [<div key="no">No known faces.</div>];
   const knownNames = Object.keys(knownFaces);
   if (knownNames.length > 0) {
+    let allDistances: { [key: string]: number[] } = {};
+    if (facelist.length > 0) {
+      allDistances = calculateFaceDistances(knownFaces, facelist);
+    }
+
     knownFacesList = knownNames.map(name => {
       const faces = knownFaces[name];
+      const personDistances = allDistances[name];
 
       const renderedFaces = faces.map((f, i) => {
-        return <img key={`${name}_${i}`} alt="hello" src={'data:image/png;base64, ' + f.image_jpg} />;
+        let distance = null;
+        if (personDistances && personDistances.length > i) {
+          distance = <span>distance: {personDistances[i].toFixed(2)}</span>;
+        }
+
+        return (
+          <div key={`${name}_${i}`}>
+            {distance}
+            <img
+              alt="hello"
+              src={'data:image/png;base64, ' + f.image_jpg}
+              onClick={() => handleDeleteKnownFace(name, i)}
+              style={{ cursor: 'pointer' }}
+            />
+          </div>
+        );
       });
 
       return (

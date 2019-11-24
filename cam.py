@@ -99,8 +99,8 @@ scale = 0.5
 tick = 0
 
 while True:
-    
-    if (time.time() - tick) < 2.0:
+
+    if (time.time() - tick) < 0.5:
         ret = video_capture.grab()
         continue
 
