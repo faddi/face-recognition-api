@@ -1,6 +1,8 @@
 import React from 'react';
 // import logo from './logo.svg';
 import './App.css';
+import { Face } from './types';
+import { Editor } from './Editor';
 
 const addr = 'ws://localhost:6789';
 
@@ -37,54 +39,102 @@ const start = (onData: (data: any) => void) => {
   };
 };
 
-interface Face {
-  age: number;
-  bbox: [number, number, number, number];
-  det_score: number;
-  embedding: number[];
-  embedding_norm: number[];
-  gender: number;
-  image_jpg: string;
-  landmark: number[][];
-  normed_embedding: number;
-}
+const STORAGE_KEY = 'known_faces';
+const getKnownFacesFromStorage = (): { [key: string]: Face[] } => {
+  const known_faces_str = localStorage.getItem(STORAGE_KEY);
+
+  if (known_faces_str === null) {
+    return {};
+  }
+
+  try {
+    return JSON.parse(known_faces_str);
+  } catch (e) {
+    console.log('parse error for ', known_faces_str);
+    console.log(e);
+    console.log('falling back to {}');
+
+    return {};
+  }
+};
 
 const App: React.FC = () => {
   const [facelist, setFaceList] = React.useState<Face[]>([]);
+  const [editFace, setEditFace] = React.useState<Face | null>(null);
+  const [knownFaces, setKnownFaces] = React.useState<{ [key: string]: Face[] }>(getKnownFacesFromStorage());
 
   React.useEffect(() => {
     start(setFaceList);
   }, []);
 
-  const handleFaceClick = (face: Face) => {
-    console.log(face);
+  const handleAddFace = (nameIn: string, face: Face) => {
+    console.log(nameIn, face);
 
-    const known_faces_str = localStorage.getItem('known_faces')
+    const name = nameIn.trim();
 
-    if (known_faces_str === null) {
+    if (name.length === 0) {
+      console.log('invalid name');
       return;
     }
 
-    const known_faces: { [key:string]: Face[] } = JSON.parse(known_faces_str);
+    const known = getKnownFacesFromStorage();
 
+    if (name in known) {
+      known[name].push(face);
+    } else {
+      known[name] = [face];
+    }
 
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(known));
+    setKnownFaces(known);
   };
 
   let f = facelist.map(face => {
     return (
-      <div key={JSON.stringify(face.landmark)} onClick={() => handleFaceClick(face)} style={{ cursor: 'pointer' }}>
+      <div key={JSON.stringify(face.landmark)} onClick={() => setEditFace(face)} style={{ cursor: 'pointer' }}>
         <img alt="hello" src={'data:image/png;base64, ' + face.image_jpg} />
       </div>
     );
   });
 
   if (f.length === 0) {
-    f = [<div key="empty">Nothing found...</div>];
+    f = [<div key="empty">Nothing found in front of camera.</div>];
+  }
+
+  let editor = null;
+  if (editFace !== null) {
+    editor = (
+      <Editor face={editFace} onSubmit={name => handleAddFace(name, editFace)} onCancel={() => setEditFace(null)} />
+    );
+  }
+
+  let knownFacesList = [<div key="no">No known faces.</div>];
+  const knownNames = Object.keys(knownFaces);
+  if (knownNames.length > 0) {
+    knownFacesList = knownNames.map(name => {
+      const faces = knownFaces[name];
+
+      const renderedFaces = faces.map((f, i) => {
+        return <img key={`${name}_${i}`} alt="hello" src={'data:image/png;base64, ' + f.image_jpg} />;
+      });
+
+      return (
+        <div key={name}>
+          <h4>{name}</h4>
+          {renderedFaces}
+        </div>
+      );
+    });
   }
 
   return (
     <div className="App">
-      <header className="App-header">{f}</header>
+      {editor}
+      <div className="App-header">
+        {knownFacesList}
+        <hr />
+        {f}
+      </div>
     </div>
   );
 };
