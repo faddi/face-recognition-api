@@ -11,6 +11,7 @@ import base64
 from typing import List
 import insightface.model_zoo.face_recognition as fr
 import insightface.model_zoo.model_zoo as mz
+import time
 
 mz._models['arcface_mfn_v1'] = fr.arcface_mfn_v1
 
@@ -82,6 +83,7 @@ t.start()
 
 # Get a reference to webcam #0 (the default one)
 video_capture = cv2.VideoCapture(0)
+video_capture.set(cv2.CAP_PROP_BUFFERSIZE, 0)
 
 # Initialize some variables
 face_locations = []
@@ -92,12 +94,23 @@ model.prepare(-1)
 # r = redis.Redis(host='localhost', port=6379, db=0)
 
 last_empty_sent = False
-scale = 1.0
+scale = 0.5
+
+tick = 0
 
 while True:
-    sleep(1.0)
+    
+    if (time.time() - tick) < 2.0:
+        ret = video_capture.grab()
+        continue
+
+    tick = time.time()
+
     # Grab a single frame of video
     ret, frame = video_capture.read()
+
+    # if not USERS:
+    #   continue
 
     if not ret:
       print("bad frame")
