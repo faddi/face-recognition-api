@@ -171,9 +171,13 @@ const App: React.FC = () => {
       const renderedFaces = faces.map((f, i) => {
         let distance = null;
         if (personDistances && personDistances.length > i) {
-          distance = personDistances[i].map((ds, faceindex) => {
-            return <span key={`${name}_${i}_${faceindex}`} style={{display: 'inline-block', padding: '0 10px'}}><img alt="w/e" src={'data:image/png;base64, ' + facelist[faceindex].image_jpg} />: {ds.toFixed(2)}</span>;
-          })
+          const d = personDistances[i];
+
+          distance = d.map((ds, faceindex) => {
+            return { e: <span key={`${name}_${i}_${faceindex}`} style={{display: 'inline-block', padding: '0 10px'}}><img alt="w/e" src={'data:image/png;base64, ' + facelist[faceindex].image_jpg} />: {ds.toFixed(2)}</span>, ds: ds };
+          });
+
+          distance = distance.sort((a, b) => a.ds - b.ds).map(a => a.e);
         }
 
         return (
