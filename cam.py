@@ -72,7 +72,9 @@ async def handler(websocket, path):
 def setup_ws():
   loop = asyncio.new_event_loop()
   asyncio.set_event_loop(loop)
-  start_server = websockets.serve(handler, "localhost", 6789)
+  # start_server = websockets.serve(handler, "172.16.135.202", 6789)
+  # start_server = websockets.serve(handler, "localhost", 6789)
+  start_server = websockets.serve(handler, "0.0.0.0", 6789)
   print("ws server started")
   asyncio.get_event_loop().run_until_complete(start_server)
   asyncio.get_event_loop().run_forever()
@@ -83,7 +85,7 @@ t.start()
 
 # Get a reference to webcam #0 (the default one)
 video_capture = cv2.VideoCapture(0)
-video_capture.set(cv2.CAP_PROP_BUFFERSIZE, 0)
+video_capture.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
 # Initialize some variables
 face_locations = []
@@ -94,13 +96,18 @@ model.prepare(-1)
 # r = redis.Redis(host='localhost', port=6379, db=0)
 
 last_empty_sent = False
-scale = 0.5
+scale = 1.0
 
 tick = 0
 
 while True:
+    # ret, frame = video_capture.read()
+    # cv2.imshow('Video', frame)
+    # if cv2.waitKey(1) & 0xFF == ord('q'):
+    #     break
+    # continue
 
-    if (time.time() - tick) < 0.5:
+    if (time.time() - tick) < 3:
         ret = video_capture.grab()
         continue
 
@@ -118,8 +125,11 @@ while True:
 
     # Resize frame of video to 1/4 size for faster face detection processing
     small_frame = cv2.resize(frame, (0, 0), fx=scale, fy=scale)
+    print(small_frame.shape)
 
+    mtime = time.time()
     ret: List[Face] = model.get(small_frame)
+    print(f"inference: {time.time() - mtime}")
 
     # print(len(ret))
     # print(ret[0]._asdict().keys())
