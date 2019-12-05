@@ -1,0 +1,95 @@
+7767517
+93 111
+Input                    data                     0 1 data
+BinaryOp                 underscorencnn_0_minusscalar0 1 1 data underscorencnn_0_minusscalar0 0=1 1=1 2=1.275000e+02
+BinaryOp                 underscorencnn_1_mulscalar0 1 1 underscorencnn_0_minusscalar0 underscorencnn_1_mulscalar0 0=2 1=1 2=7.812500e-03
+Convolution              conv_1_conv2d            1 1 underscorencnn_1_mulscalar0 conv_1_relu 0=16 1=3 3=2 4=1 5=1 6=432 9=1
+Convolution              conv_2_conv2d            1 1 conv_1_relu conv_2_relu 0=32 1=1 5=1 6=512 9=1
+ConvolutionDepthWise     conv_3_dw_conv2d         1 1 conv_2_relu conv_3_dw_relu 0=32 1=3 3=2 4=1 5=1 6=288 7=32 9=1
+Convolution              conv_3_conv2d            1 1 conv_3_dw_relu conv_3_relu 0=32 1=1 5=1 6=1024 9=1
+ConvolutionDepthWise     conv_4_dw_conv2d         1 1 conv_3_relu conv_4_dw_relu 0=32 1=3 4=1 5=1 6=288 7=32 9=1
+Convolution              conv_4_conv2d            1 1 conv_4_dw_relu conv_4_relu 0=32 1=1 5=1 6=1024 9=1
+ConvolutionDepthWise     conv_5_dw_conv2d         1 1 conv_4_relu conv_5_dw_relu 0=32 1=3 3=2 4=1 5=1 6=288 7=32 9=1
+Convolution              conv_5_conv2d            1 1 conv_5_dw_relu conv_5_relu 0=64 1=1 5=1 6=2048 9=1
+ConvolutionDepthWise     conv_6_dw_conv2d         1 1 conv_5_relu conv_6_dw_relu 0=64 1=3 4=1 5=1 6=576 7=64 9=1
+Convolution              conv_6_conv2d            1 1 conv_6_dw_relu conv_6_relu 0=64 1=1 5=1 6=4096 9=1
+Split                    splitncnn_0              1 2 conv_6_relu conv_6_relu_splitncnn_0 conv_6_relu_splitncnn_1
+ConvolutionDepthWise     conv_7_dw_conv2d         1 1 conv_6_relu_splitncnn_1 conv_7_dw_relu 0=64 1=3 3=2 4=1 5=1 6=576 7=64 9=1
+Convolution              conv_7_conv2d            1 1 conv_7_dw_relu conv_7_relu 0=128 1=1 5=1 6=8192 9=1
+ConvolutionDepthWise     conv_8_dw_conv2d         1 1 conv_7_relu conv_8_dw_relu 0=128 1=3 4=1 5=1 6=1152 7=128 9=1
+Convolution              conv_8_conv2d            1 1 conv_8_dw_relu conv_8_relu 0=128 1=1 5=1 6=16384 9=1
+ConvolutionDepthWise     conv_9_dw_conv2d         1 1 conv_8_relu conv_9_dw_relu 0=128 1=3 4=1 5=1 6=1152 7=128 9=1
+Convolution              conv_9_conv2d            1 1 conv_9_dw_relu conv_9_relu 0=128 1=1 5=1 6=16384 9=1
+ConvolutionDepthWise     conv_10_dw_conv2d        1 1 conv_9_relu conv_10_dw_relu 0=128 1=3 4=1 5=1 6=1152 7=128 9=1
+Convolution              conv_10_conv2d           1 1 conv_10_dw_relu conv_10_relu 0=128 1=1 5=1 6=16384 9=1
+ConvolutionDepthWise     conv_11_dw_conv2d        1 1 conv_10_relu conv_11_dw_relu 0=128 1=3 4=1 5=1 6=1152 7=128 9=1
+Convolution              conv_11_conv2d           1 1 conv_11_dw_relu conv_11_relu 0=128 1=1 5=1 6=16384 9=1
+ConvolutionDepthWise     conv_12_dw_conv2d        1 1 conv_11_relu conv_12_dw_relu 0=128 1=3 4=1 5=1 6=1152 7=128 9=1
+Convolution              conv_12_conv2d           1 1 conv_12_dw_relu conv_12_relu 0=128 1=1 5=1 6=16384 9=1
+Split                    splitncnn_1              1 2 conv_12_relu conv_12_relu_splitncnn_0 conv_12_relu_splitncnn_1
+ConvolutionDepthWise     conv_13_dw_conv2d        1 1 conv_12_relu_splitncnn_1 conv_13_dw_relu 0=128 1=3 3=2 4=1 5=1 6=1152 7=128 9=1
+Convolution              conv_13_conv2d           1 1 conv_13_dw_relu conv_13_relu 0=256 1=1 5=1 6=32768 9=1
+ConvolutionDepthWise     conv_14_dw_conv2d        1 1 conv_13_relu conv_14_dw_relu 0=256 1=3 4=1 5=1 6=2304 7=256 9=1
+Convolution              conv_14_conv2d           1 1 conv_14_dw_relu conv_14_relu 0=256 1=1 5=1 6=65536 9=1
+Convolution              conv_final_conv2d        1 1 conv_14_relu conv_final_relu 0=256 1=1 5=1 6=65536 9=1
+Convolution              rf_c3_lateral            1 1 conv_final_relu rf_c3_lateral_relu 0=64 1=1 5=1 6=16384 9=1
+Split                    splitncnn_2              1 3 rf_c3_lateral_relu rf_c3_lateral_relu_splitncnn_0 rf_c3_lateral_relu_splitncnn_1 rf_c3_lateral_relu_splitncnn_2
+Convolution              rf_head_stride32_conv1   1 1 rf_c3_lateral_relu_splitncnn_2 rf_head_stride32_conv1_bn 0=32 1=3 4=1 5=1 6=18432
+Convolution              rf_head_stride32_context_conv1 1 1 rf_c3_lateral_relu_splitncnn_1 rf_head_stride32_context_conv1_relu 0=16 1=3 4=1 5=1 6=9216 9=1
+Split                    splitncnn_3              1 2 rf_head_stride32_context_conv1_relu rf_head_stride32_context_conv1_relu_splitncnn_0 rf_head_stride32_context_conv1_relu_splitncnn_1
+Convolution              rf_head_stride32_context_conv2 1 1 rf_head_stride32_context_conv1_relu_splitncnn_1 rf_head_stride32_context_conv2_bn 0=16 1=3 4=1 5=1 6=2304
+Convolution              rf_head_stride32_context_conv3_1 1 1 rf_head_stride32_context_conv1_relu_splitncnn_0 rf_head_stride32_context_conv3_1_relu 0=16 1=3 4=1 5=1 6=2304 9=1
+Convolution              rf_head_stride32_context_conv3_2 1 1 rf_head_stride32_context_conv3_1_relu rf_head_stride32_context_conv3_2_bn 0=16 1=3 4=1 5=1 6=2304
+Concat                   rf_head_stride32_concat  3 1 rf_head_stride32_conv1_bn rf_head_stride32_context_conv2_bn rf_head_stride32_context_conv3_2_bn rf_head_stride32_concat
+ReLU                     rf_head_stride32_concat_relu 1 1 rf_head_stride32_concat rf_head_stride32_concat_relu
+Split                    splitncnn_4              1 3 rf_head_stride32_concat_relu rf_head_stride32_concat_relu_splitncnn_0 rf_head_stride32_concat_relu_splitncnn_1 rf_head_stride32_concat_relu_splitncnn_2
+Convolution              face_rpn_cls_score_stride32 1 1 rf_head_stride32_concat_relu_splitncnn_2 face_rpn_cls_score_stride32 0=4 1=1 5=1 6=256
+Reshape                  face_rpn_cls_score_reshape_stride32 1 1 face_rpn_cls_score_stride32 face_rpn_cls_score_reshape_stride32 0=0 1=-1 2=2
+Softmax                  face_rpn_cls_prob_stride32 1 1 face_rpn_cls_score_reshape_stride32 face_rpn_cls_prob_stride32
+Reshape                  face_rpn_cls_prob_reshape_stride32 1 1 face_rpn_cls_prob_stride32 face_rpn_cls_prob_reshape_stride32 0=0 1=-1 2=4
+Convolution              face_rpn_bbox_pred_stride32 1 1 rf_head_stride32_concat_relu_splitncnn_1 face_rpn_bbox_pred_stride32 0=8 1=1 5=1 6=512
+Convolution              face_rpn_landmark_pred_stride32 1 1 rf_head_stride32_concat_relu_splitncnn_0 face_rpn_landmark_pred_stride32 0=20 1=1 5=1 6=1280
+Convolution              rf_c2_lateral            1 1 conv_12_relu_splitncnn_0 rf_c2_lateral_relu 0=64 1=1 5=1 6=8192 9=1
+Split                    splitncnn_5              1 2 rf_c2_lateral_relu rf_c2_lateral_relu_splitncnn_0 rf_c2_lateral_relu_splitncnn_1
+Interp                   rf_c3_upsampling         1 1 rf_c3_lateral_relu_splitncnn_0 rf_c3_upsampling 0=1 1=2.000000e+00 2=2.000000e+00
+Crop                     crop0                    2 1 rf_c3_upsampling rf_c2_lateral_relu_splitncnn_1 crop0
+BinaryOp                 underscorencnn_2_plus0   2 1 rf_c2_lateral_relu_splitncnn_0 crop0 underscorencnn_2_plus0
+Convolution              rf_c2_aggr               1 1 underscorencnn_2_plus0 rf_c2_aggr_relu 0=64 1=3 4=1 5=1 6=36864 9=1
+Split                    splitncnn_6              1 3 rf_c2_aggr_relu rf_c2_aggr_relu_splitncnn_0 rf_c2_aggr_relu_splitncnn_1 rf_c2_aggr_relu_splitncnn_2
+Convolution              rf_head_stride16_conv1   1 1 rf_c2_aggr_relu_splitncnn_2 rf_head_stride16_conv1_bn 0=32 1=3 4=1 5=1 6=18432
+Convolution              rf_head_stride16_context_conv1 1 1 rf_c2_aggr_relu_splitncnn_1 rf_head_stride16_context_conv1_relu 0=16 1=3 4=1 5=1 6=9216 9=1
+Split                    splitncnn_7              1 2 rf_head_stride16_context_conv1_relu rf_head_stride16_context_conv1_relu_splitncnn_0 rf_head_stride16_context_conv1_relu_splitncnn_1
+Convolution              rf_head_stride16_context_conv2 1 1 rf_head_stride16_context_conv1_relu_splitncnn_1 rf_head_stride16_context_conv2_bn 0=16 1=3 4=1 5=1 6=2304
+Convolution              rf_head_stride16_context_conv3_1 1 1 rf_head_stride16_context_conv1_relu_splitncnn_0 rf_head_stride16_context_conv3_1_relu 0=16 1=3 4=1 5=1 6=2304 9=1
+Convolution              rf_head_stride16_context_conv3_2 1 1 rf_head_stride16_context_conv3_1_relu rf_head_stride16_context_conv3_2_bn 0=16 1=3 4=1 5=1 6=2304
+Concat                   rf_head_stride16_concat  3 1 rf_head_stride16_conv1_bn rf_head_stride16_context_conv2_bn rf_head_stride16_context_conv3_2_bn rf_head_stride16_concat
+ReLU                     rf_head_stride16_concat_relu 1 1 rf_head_stride16_concat rf_head_stride16_concat_relu
+Split                    splitncnn_8              1 3 rf_head_stride16_concat_relu rf_head_stride16_concat_relu_splitncnn_0 rf_head_stride16_concat_relu_splitncnn_1 rf_head_stride16_concat_relu_splitncnn_2
+Convolution              face_rpn_cls_score_stride16 1 1 rf_head_stride16_concat_relu_splitncnn_2 face_rpn_cls_score_stride16 0=4 1=1 5=1 6=256
+Reshape                  face_rpn_cls_score_reshape_stride16 1 1 face_rpn_cls_score_stride16 face_rpn_cls_score_reshape_stride16 0=0 1=-1 2=2
+Softmax                  face_rpn_cls_prob_stride16 1 1 face_rpn_cls_score_reshape_stride16 face_rpn_cls_prob_stride16
+Reshape                  face_rpn_cls_prob_reshape_stride16 1 1 face_rpn_cls_prob_stride16 face_rpn_cls_prob_reshape_stride16 0=0 1=-1 2=4
+Convolution              face_rpn_bbox_pred_stride16 1 1 rf_head_stride16_concat_relu_splitncnn_1 face_rpn_bbox_pred_stride16 0=8 1=1 5=1 6=512
+Convolution              face_rpn_landmark_pred_stride16 1 1 rf_head_stride16_concat_relu_splitncnn_0 face_rpn_landmark_pred_stride16 0=20 1=1 5=1 6=1280
+Convolution              rf_c1_red_conv           1 1 conv_6_relu_splitncnn_0 rf_c1_red_conv_relu 0=64 1=1 5=1 6=4096 9=1
+Split                    splitncnn_9              1 2 rf_c1_red_conv_relu rf_c1_red_conv_relu_splitncnn_0 rf_c1_red_conv_relu_splitncnn_1
+Interp                   rf_c2_upsampling         1 1 rf_c2_aggr_relu_splitncnn_0 rf_c2_upsampling 0=1 1=2.000000e+00 2=2.000000e+00
+Crop                     crop1                    2 1 rf_c2_upsampling rf_c1_red_conv_relu_splitncnn_1 crop1
+BinaryOp                 underscorencnn_3_plus1   2 1 rf_c1_red_conv_relu_splitncnn_0 crop1 underscorencnn_3_plus1
+Convolution              rf_c1_aggr               1 1 underscorencnn_3_plus1 rf_c1_aggr_relu 0=64 1=3 4=1 5=1 6=36864 9=1
+Split                    splitncnn_10             1 2 rf_c1_aggr_relu rf_c1_aggr_relu_splitncnn_0 rf_c1_aggr_relu_splitncnn_1
+Convolution              rf_head_stride8_conv1    1 1 rf_c1_aggr_relu_splitncnn_1 rf_head_stride8_conv1_bn 0=32 1=3 4=1 5=1 6=18432
+Convolution              rf_head_stride8_context_conv1 1 1 rf_c1_aggr_relu_splitncnn_0 rf_head_stride8_context_conv1_relu 0=16 1=3 4=1 5=1 6=9216 9=1
+Split                    splitncnn_11             1 2 rf_head_stride8_context_conv1_relu rf_head_stride8_context_conv1_relu_splitncnn_0 rf_head_stride8_context_conv1_relu_splitncnn_1
+Convolution              rf_head_stride8_context_conv2 1 1 rf_head_stride8_context_conv1_relu_splitncnn_1 rf_head_stride8_context_conv2_bn 0=16 1=3 4=1 5=1 6=2304
+Convolution              rf_head_stride8_context_conv3_1 1 1 rf_head_stride8_context_conv1_relu_splitncnn_0 rf_head_stride8_context_conv3_1_relu 0=16 1=3 4=1 5=1 6=2304 9=1
+Convolution              rf_head_stride8_context_conv3_2 1 1 rf_head_stride8_context_conv3_1_relu rf_head_stride8_context_conv3_2_bn 0=16 1=3 4=1 5=1 6=2304
+Concat                   rf_head_stride8_concat   3 1 rf_head_stride8_conv1_bn rf_head_stride8_context_conv2_bn rf_head_stride8_context_conv3_2_bn rf_head_stride8_concat
+ReLU                     rf_head_stride8_concat_relu 1 1 rf_head_stride8_concat rf_head_stride8_concat_relu
+Split                    splitncnn_12             1 3 rf_head_stride8_concat_relu rf_head_stride8_concat_relu_splitncnn_0 rf_head_stride8_concat_relu_splitncnn_1 rf_head_stride8_concat_relu_splitncnn_2
+Convolution              face_rpn_cls_score_stride8 1 1 rf_head_stride8_concat_relu_splitncnn_2 face_rpn_cls_score_stride8 0=4 1=1 5=1 6=256
+Reshape                  face_rpn_cls_score_reshape_stride8 1 1 face_rpn_cls_score_stride8 face_rpn_cls_score_reshape_stride8 0=0 1=-1 2=2
+Softmax                  face_rpn_cls_prob_stride8 1 1 face_rpn_cls_score_reshape_stride8 face_rpn_cls_prob_stride8
+Reshape                  face_rpn_cls_prob_reshape_stride8 1 1 face_rpn_cls_prob_stride8 face_rpn_cls_prob_reshape_stride8 0=0 1=-1 2=4
+Convolution              face_rpn_bbox_pred_stride8 1 1 rf_head_stride8_concat_relu_splitncnn_1 face_rpn_bbox_pred_stride8 0=8 1=1 5=1 6=512
+Convolution              face_rpn_landmark_pred_stride8 1 1 rf_head_stride8_concat_relu_splitncnn_0 face_rpn_landmark_pred_stride8 0=20 1=1 5=1 6=1280
